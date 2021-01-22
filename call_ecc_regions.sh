@@ -46,156 +46,155 @@ done
 # make sure split reads appear only twice, clearly representing an eccDNA junction
 # make sure split reads map to the same chromosome (split reads mapping to different chromosomes would need to be analyzed using a different pipeline because opposite facing read pairs wouldn't make sense)
 # make sure split read halves are properly oriented to that they represent eccDNA junctions and not potential introns ( ---> gap --- is an eccDNA junction vs --- gap ---> is an intron)
-samtools view -f 81 -F 4 ${FILTERED_BAMFILE} > tmp.reverseread1.${SAMPLE}.sam
-splitread_file="reverseread1.${SAMPLE}.sam"
-awk -v OFS='\t' '{a=gensub(/^([0-9]+)M.*[HS]$/, "\\1", "", $6); b=gensub(/.*[HS]([0-9]+)M$/, "\\1", "", $6); if (a !~ /[DMIHS]/ && int(a) > 19 ) print $0, 1; else if (b !~ /[DMIHS]/ && int(b) > 19) print $0, 2}' tmp.${splitread_file} > tmp.qualityfiltered.${splitread_file}
-awk 'NR==FNR{a[$1, $3]++; next} a[$1, $3]==2' tmp.qualityfiltered.${splitread_file} tmp.qualityfiltered.${splitread_file} | sort -k1,1 -k18,18n > tmp.samechromosome.exactlytwice.qualityfiltered.${splitread_file}
+samtools view -f 81 -F 4 ${FILTERED_BAMFILE} > ${SAMPLE}.tmp.reverseread1.sam
+splitread_file="${SAMPLE}.reverseread1.sam"
+awk -v OFS='\t' '{a=gensub(/^([0-9]+)M.*[HS]$/, "\\1", "", $6); b=gensub(/.*[HS]([0-9]+)M$/, "\\1", "", $6); if (a !~ /[DMIHS]/ && int(a) > 19 ) print $0, 1; else if (b !~ /[DMIHS]/ && int(b) > 19) print $0, 2}' ${splitread_file}.tmp > ${splitread_file}.tmp.qualityfiltered
+awk 'NR==FNR{a[$1, $3]++; next} a[$1, $3]==2' ${splitread_file}.tmp.qualityfiltered ${splitread_file}.tmp.qualityfiltered | sort -k1,1 -k18,18n > ${splitread_file}.tmp.samechromosome.exactlytwice.qualityfiltered
 awk -v OFS='\t' '{
     prev=$0; f4=$4; f1=$1
-    getline 
+    getline
     if ($1 == f1 && f4 > $4) {
         print prev
         print $0
     }
-}' tmp.samechromosome.exactlytwice.qualityfiltered.${splitread_file} | awk -v OFS='\t' '{$NF=""; print $0}' | sed 's/[ \t]\+$//' > tmp.oriented.samechromosome.exactlytwice.qualityfiltered.${splitread_file}
+}' ${splitread_file}.tmp.samechromosome.exactlytwice.qualityfiltered | awk -v OFS='\t' '{$NF=""; print $0}' | sed 's/[ \t]\+$//' > ${splitread_file}.tmp.oriented.samechromosome.exactlytwice.qualityfiltered
 
-samtools view -f 145 -F 4 ${FILTERED_BAMFILE} > tmp.reverseread2.${SAMPLE}.sam
-splitread_file="reverseread2.${SAMPLE}.sam"
-awk -v OFS='\t' '{a=gensub(/^([0-9]+)M.*[HS]$/, "\\1", "", $6); b=gensub(/.*[HS]([0-9]+)M$/, "\\1", "", $6); if (a !~ /[DMIHS]/ && int(a) > 19 ) print $0, 1; else if (b !~ /[DMIHS]/ && int(b) > 19) print $0, 2}' tmp.${splitread_file} > tmp.qualityfiltered.${splitread_file}
-awk 'NR==FNR{a[$1, $3]++; next} a[$1, $3]==2' tmp.qualityfiltered.${splitread_file} tmp.qualityfiltered.${splitread_file} | sort -k1,1 -k18,18n > tmp.samechromosome.exactlytwice.qualityfiltered.${splitread_file}
+samtools view -f 145 -F 4 ${FILTERED_BAMFILE} > ${SAMPLE}.tmp.reverseread2.sam
+splitread_file="${SAMPLE}.reverseread2.sam"
+awk -v OFS='\t' '{a=gensub(/^([0-9]+)M.*[HS]$/, "\\1", "", $6); b=gensub(/.*[HS]([0-9]+)M$/, "\\1", "", $6); if (a !~ /[DMIHS]/ && int(a) > 19 ) print $0, 1; else if (b !~ /[DMIHS]/ && int(b) > 19) print $0, 2}' ${splitread_file}.tmp > ${splitread_file}.tmp.qualityfiltered
+awk 'NR==FNR{a[$1, $3]++; next} a[$1, $3]==2' ${splitread_file}.tmp.qualityfiltered ${splitread_file}.tmp.qualityfiltered | sort -k1,1 -k18,18n > ${splitread_file}.tmp.samechromosome.exactlytwice.qualityfiltered
 awk -v OFS='\t' '{
     prev=$0; f4=$4; f1=$1
-    getline 
+    getline
     if ($1 == f1 && f4 > $4) {
         print prev
         print $0
     }
-}' tmp.samechromosome.exactlytwice.qualityfiltered.${splitread_file} | awk -v OFS='\t' '{$NF=""; print $0}' | sed 's/[ \t]\+$//' > tmp.oriented.samechromosome.exactlytwice.qualityfiltered.${splitread_file}
+}' ${splitread_file}.tmp.samechromosome.exactlytwice.qualityfiltered | awk -v OFS='\t' '{$NF=""; print $0}' | sed 's/[ \t]\+$//' > ${splitread_file}.tmp.oriented.samechromosome.exactlytwice.qualityfiltered
 
-samtools view -f 65 -F 20 ${FILTERED_BAMFILE} > tmp.forwardread1.${SAMPLE}.sam
-splitread_file="forwardread1.${SAMPLE}.sam"
-awk -v OFS='\t' '{a=gensub(/^([0-9]+)M.*[HS]$/, "\\1", "", $6); b=gensub(/.*[HS]([0-9]+)M$/, "\\1", "", $6); if (a !~ /[DMIHS]/ && int(a) > 19 ) print $0, 1; else if (b !~ /[DMIHS]/ && int(b) > 19) print $0, 2}' tmp.${splitread_file} > tmp.qualityfiltered.${splitread_file}
-awk 'NR==FNR{a[$1, $3]++; next} a[$1, $3]==2' tmp.qualityfiltered.${splitread_file} tmp.qualityfiltered.${splitread_file} | sort -k1,1 -k18,18n > tmp.samechromosome.exactlytwice.qualityfiltered.${splitread_file}
+samtools view -f 65 -F 20 ${FILTERED_BAMFILE} > ${SAMPLE}.tmp.forwardread1.sam
+splitread_file="${SAMPLE}.forwardread1.sam"
+awk -v OFS='\t' '{a=gensub(/^([0-9]+)M.*[HS]$/, "\\1", "", $6); b=gensub(/.*[HS]([0-9]+)M$/, "\\1", "", $6); if (a !~ /[DMIHS]/ && int(a) > 19 ) print $0, 1; else if (b !~ /[DMIHS]/ && int(b) > 19) print $0, 2}' ${splitread_file}.tmp > ${splitread_file}.tmp.qualityfiltered
+awk 'NR==FNR{a[$1, $3]++; next} a[$1, $3]==2' ${splitread_file}.tmp.qualityfiltered ${splitread_file}.tmp.qualityfiltered | sort -k1,1 -k18,18n > ${splitread_file}.tmp.samechromosome.exactlytwice.qualityfiltered
 awk -v OFS='\t' '{
     prev=$0; f4=$4; f1=$1
-    getline 
+    getline
     if ($1 == f1 && f4 > $4) {
         print prev
         print $0
     }
-}' tmp.samechromosome.exactlytwice.qualityfiltered.${splitread_file} | awk -v OFS='\t' '{$NF=""; print $0}' | sed 's/[ \t]\+$//' > tmp.oriented.samechromosome.exactlytwice.qualityfiltered.${splitread_file}
+}' ${splitread_file}.tmp.samechromosome.exactlytwice.qualityfiltered | awk -v OFS='\t' '{$NF=""; print $0}' | sed 's/[ \t]\+$//' > ${splitread_file}.tmp.oriented.samechromosome.exactlytwice.qualityfiltered
 
-samtools view -f 129 -F 20 ${FILTERED_BAMFILE} > tmp.forwardread2.${SAMPLE}.sam
-splitread_file="forwardread2.${SAMPLE}.sam"
-awk -v OFS='\t' '{a=gensub(/^([0-9]+)M.*[HS]$/, "\\1", "", $6); b=gensub(/.*[HS]([0-9]+)M$/, "\\1", "", $6); if (a !~ /[DMIHS]/ && int(a) > 19 ) print $0, 1; else if (b !~ /[DMIHS]/ && int(b) > 19) print $0, 2}' tmp.${splitread_file} > tmp.qualityfiltered.${splitread_file}
-awk 'NR==FNR{a[$1, $3]++; next} a[$1, $3]==2' tmp.qualityfiltered.${splitread_file} tmp.qualityfiltered.${splitread_file} | sort -k1,1 -k18,18n > tmp.samechromosome.exactlytwice.qualityfiltered.${splitread_file}
+samtools view -f 129 -F 20 ${FILTERED_BAMFILE} > ${SAMPLE}.tmp.forwardread2.sam
+splitread_file="${SAMPLE}.forwardread2.sam"
+awk -v OFS='\t' '{a=gensub(/^([0-9]+)M.*[HS]$/, "\\1", "", $6); b=gensub(/.*[HS]([0-9]+)M$/, "\\1", "", $6); if (a !~ /[DMIHS]/ && int(a) > 19 ) print $0, 1; else if (b !~ /[DMIHS]/ && int(b) > 19) print $0, 2}' ${splitread_file}.tmp > ${splitread_file}.tmp.qualityfiltered
+awk 'NR==FNR{a[$1, $3]++; next} a[$1, $3]==2' ${splitread_file}.tmp.qualityfiltered ${splitread_file}.tmp.qualityfiltered | sort -k1,1 -k18,18n > ${splitread_file}.tmp.samechromosome.exactlytwice.qualityfiltered
 awk -v OFS='\t' '{
     prev=$0; f4=$4; f1=$1
-    getline 
+    getline
     if ($1 == f1 && f4 > $4) {
         print prev
         print $0
     }
-}' tmp.samechromosome.exactlytwice.qualityfiltered.${splitread_file} | awk -v OFS='\t' '{$NF=""; print $0}' | sed 's/[ \t]\+$//' > tmp.oriented.samechromosome.exactlytwice.qualityfiltered.${splitread_file}
+}' ${splitread_file}.tmp.samechromosome.exactlytwice.qualityfiltered | awk -v OFS='\t' '{$NF=""; print $0}' | sed 's/[ \t]\+$//' > ${splitread_file}.tmp.oriented.samechromosome.exactlytwice.qualityfiltered
 
 # I did some merging of reads in the past but this ended up being detrimental
 # these next two chunks should be removed eventually
 # currently both of these should contain 0 reads
-samtools view -f 16 -F 5 ${FILTERED_BAMFILE} > tmp.reversemerged.${SAMPLE}.sam
-splitread_file="reversemerged.${SAMPLE}.sam"
-awk -v OFS='\t' '{a=gensub(/^([0-9]+)M.*[HS]$/, "\\1", "", $6); b=gensub(/.*[HS]([0-9]+)M$/, "\\1", "", $6); if (a !~ /[DMIHS]/ && int(a) > 19 ) print $0, 1; else if (b !~ /[DMIHS]/ && int(b) > 19) print $0, 2}' tmp.${splitread_file} > tmp.qualityfiltered.${splitread_file}
-awk 'NR==FNR{a[$1, $3]++; next} a[$1, $3]==2' tmp.qualityfiltered.${splitread_file} tmp.qualityfiltered.${splitread_file} | sort -k1,1 -k18,18n > tmp.samechromosome.exactlytwice.qualityfiltered.${splitread_file}
+samtools view -f 16 -F 5 ${FILTERED_BAMFILE} > ${SAMPLE}.tmp.reversemerged.sam
+splitread_file="${SAMPLE}.reversemerged.sam"
+awk -v OFS='\t' '{a=gensub(/^([0-9]+)M.*[HS]$/, "\\1", "", $6); b=gensub(/.*[HS]([0-9]+)M$/, "\\1", "", $6); if (a !~ /[DMIHS]/ && int(a) > 19 ) print $0, 1; else if (b !~ /[DMIHS]/ && int(b) > 19) print $0, 2}' ${splitread_file}.tmp > ${splitread_file}.tmp.qualityfiltered
+awk 'NR==FNR{a[$1, $3]++; next} a[$1, $3]==2' ${splitread_file}.tmp.qualityfiltered ${splitread_file}.tmp.qualityfiltered | sort -k1,1 -k18,18n > ${splitread_file}.tmp.samechromosome.exactlytwice.qualityfiltered
 awk -v OFS='\t' '{
     prev=$0; f4=$4; f1=$1
-    getline 
+    getline
     if ($1 == f1 && f4 > $4) {
         print prev
         print $0
     }
-}' tmp.samechromosome.exactlytwice.qualityfiltered.${splitread_file} | awk -v OFS='\t' '{$NF=""; print $0}' | sed 's/[ \t]\+$//' > tmp.oriented.samechromosome.exactlytwice.qualityfiltered.${splitread_file}
+}' ${splitread_file}.tmp.samechromosome.exactlytwice.qualityfiltered | awk -v OFS='\t' '{$NF=""; print $0}' | sed 's/[ \t]\+$//' > ${splitread_file}.tmp.oriented.samechromosome.exactlytwice.qualityfiltered
 
-samtools view -F 21 ${FILTERED_BAMFILE} > tmp.forwardmerged.${SAMPLE}.sam
-splitread_file="forwardmerged.${SAMPLE}.sam"
-awk -v OFS='\t' '{a=gensub(/^([0-9]+)M.*[HS]$/, "\\1", "", $6); b=gensub(/.*[HS]([0-9]+)M$/, "\\1", "", $6); if (a !~ /[DMIHS]/ && int(a) > 19 ) print $0, 1; else if (b !~ /[DMIHS]/ && int(b) > 19) print $0, 2}' tmp.${splitread_file} > tmp.qualityfiltered.${splitread_file}
-awk 'NR==FNR{a[$1, $3]++; next} a[$1, $3]==2' tmp.qualityfiltered.${splitread_file} tmp.qualityfiltered.${splitread_file} | sort -k1,1 -k18,18n > tmp.samechromosome.exactlytwice.qualityfiltered.${splitread_file}
+samtools view -F 21 ${FILTERED_BAMFILE} > ${SAMPLE}.tmp.forwardmerged.sam
+splitread_file="${SAMPLE}.forwardmerged.sam"
+awk -v OFS='\t' '{a=gensub(/^([0-9]+)M.*[HS]$/, "\\1", "", $6); b=gensub(/.*[HS]([0-9]+)M$/, "\\1", "", $6); if (a !~ /[DMIHS]/ && int(a) > 19 ) print $0, 1; else if (b !~ /[DMIHS]/ && int(b) > 19) print $0, 2}' ${splitread_file}.tmp > ${splitread_file}.tmp.qualityfiltered
+awk 'NR==FNR{a[$1, $3]++; next} a[$1, $3]==2' ${splitread_file}.tmp.qualityfiltered ${splitread_file}.tmp.qualityfiltered | sort -k1,1 -k18,18n > ${splitread_file}.tmp.samechromosome.exactlytwice.qualityfiltered
 awk -v OFS='\t' '{
     prev=$0; f4=$4; f1=$1
-    getline 
+    getline
     if ($1 == f1 && f4 > $4) {
         print prev
         print $0
     }
-}' tmp.samechromosome.exactlytwice.qualityfiltered.${splitread_file} | awk -v OFS='\t' '{$NF=""; print $0}' | sed 's/[ \t]\+$//' > tmp.oriented.samechromosome.exactlytwice.qualityfiltered.${splitread_file}
+}' ${splitread_file}.tmp.samechromosome.exactlytwice.qualityfiltered | awk -v OFS='\t' '{$NF=""; print $0}' | sed 's/[ \t]\+$//' > ${splitread_file}.tmp.oriented.samechromosome.exactlytwice.qualityfiltered
 
 # putting them all back together
-cat tmp.oriented.samechromosome.exactlytwice.qualityfiltered.reverseread1.${SAMPLE}.sam \
-    tmp.oriented.samechromosome.exactlytwice.qualityfiltered.reverseread2.${SAMPLE}.sam \
-    tmp.oriented.samechromosome.exactlytwice.qualityfiltered.forwardread1.${SAMPLE}.sam \
-    tmp.oriented.samechromosome.exactlytwice.qualityfiltered.forwardread2.${SAMPLE}.sam \
-    tmp.oriented.samechromosome.exactlytwice.qualityfiltered.reversemerged.${SAMPLE}.sam \
-    tmp.oriented.samechromosome.exactlytwice.qualityfiltered.forwardmerged.${SAMPLE}.sam > tmp.oriented.samechromosome.exactlytwice.qualityfiltered.all.${SAMPLE}.sam
+cat ${SAMPLE}.tmp.oriented.samechromosome.exactlytwice.qualityfiltered.reverseread1.sam \
+    ${SAMPLE}.tmp.oriented.samechromosome.exactlytwice.qualityfiltered.reverseread2.sam \
+    ${SAMPLE}.tmp.oriented.samechromosome.exactlytwice.qualityfiltered.forwardread1.sam \
+    ${SAMPLE}.tmp.oriented.samechromosome.exactlytwice.qualityfiltered.forwardread2.sam \
+    ${SAMPLE}.tmp.oriented.samechromosome.exactlytwice.qualityfiltered.reversemerged.sam \
+    ${SAMPLE}.tmp.oriented.samechromosome.exactlytwice.qualityfiltered.forwardmerged.sam > ${SAMPLE}.tmp.oriented.samechromosome.exactlytwice.qualityfiltered.all.sam
 
 # converting to bed file
-samtools view -b -h <(cat <(samtools view -H ${FILTERED_BAMFILE}) tmp.oriented.samechromosome.exactlytwice.qualityfiltered.all.${SAMPLE}.sam) > tmp.oriented.samechromosome.exactlytwice.qualityfiltered.all.${SAMPLE}.bam
-bedtools bamtobed -i tmp.oriented.samechromosome.exactlytwice.qualityfiltered.all.${SAMPLE}.bam | sort -k4,4 -k2,2n > splitreads.${SAMPLE}.bed
+samtools view -b -h <(cat <(samtools view -H ${FILTERED_BAMFILE}) ${SAMPLE}.tmp.oriented.samechromosome.exactlytwice.qualityfiltered.all.sam) > ${SAMPLE}.tmp.oriented.samechromosome.exactlytwice.qualityfiltered.all.bam
+bedtools bamtobed -i ${SAMPLE}.tmp.oriented.samechromosome.exactlytwice.qualityfiltered.all.bam | sort -k4,4 -k2,2n > ${SAMPLE}.splitreads.bed
 
 # merging split read halves into single, putative eccDNA forming regions to be confirmed or rejected
 awk -v OFS='\t' '{
     prev=$0; f2=$2; f4=$4
-    getline 
+    getline
     if ($4 == f4 && f2 < $2) {
         print $1, f2, $3, $4
     }
-}' splitreads.${SAMPLE}.bed > merged.splitreads.${SAMPLE}.bed
+}' ${SAMPLE}.splitreads.bed > ${SAMPLE}.merged.splitreads.bed
 
 # length filter because we don't expect eccDNAs to be that big
 # could be tweaked potentially but this gets rid of very few split reads
-awk -v OFS='\t' '$3-$2<1000000' merged.splitreads.${SAMPLE}.bed > lengthfiltered.merged.splitreads.${SAMPLE}.bed
+awk -v OFS='\t' '$3-$2<1000000' ${SAMPLE}.merged.splitreads.bed > ${SAMPLE}.lengthfiltered.merged.splitreads.bed
 
 # get outward facing read pairs using sam flags
 # convert to bed file
 # fix names for filtering
 # filter to appearing only exactly twice, meaning that only complete read pairs are present
-samtools view ${FILTERED_BAMFILE} | awk '{ if (($2 == 81 || $2 == 83 || $2 == 145 || $2 == 147 ) && $9 > 0) print $0 ; else if (($2 == 97 || $2 == 99 || $2 == 161 || $2 == 163) && $9 <0) print $0}' | cat <(samtools view -H ${FILTERED_BAMFILE}) - | samtools view -b -h - > tmp.outwardfacing.${SAMPLE}.bam
-bedtools bamtobed -i tmp.outwardfacing.${SAMPLE}.bam | sort -k 4,4 > tmp.outwardfacing.${SAMPLE}.bed
-mv tmp.outwardfacing.${SAMPLE}.bed tmp.outwardfacing.${SAMPLE}.bed.old
-awk 'BEGIN {OFS="\t"}; {print $1,$2,$3,substr($4, 1, length($4)-2),$5,$6}' tmp.outwardfacing.${SAMPLE}.bed.old > tmp.outwardfacing.${SAMPLE}.bed.old.trimmed
-awk 'NR==FNR{a[$4]++; next} a[$4]==2' tmp.outwardfacing.${SAMPLE}.bed.old.trimmed tmp.outwardfacing.${SAMPLE}.bed.old.trimmed > outwardfacing.${SAMPLE}.bed
+samtools view ${FILTERED_BAMFILE} | awk '{ if (($2 == 81 || $2 == 83 || $2 == 145 || $2 == 147 ) && $9 > 0) print $0 ; else if (($2 == 97 || $2 == 99 || $2 == 161 || $2 == 163) && $9 <0) print $0}' | cat <(samtools view -H ${FILTERED_BAMFILE}) - | samtools view -b -h - > ${SAMPLE}.tmp.outwardfacing.bam
+bedtools bamtobed -i ${SAMPLE}.tmp.outwardfacing.bam | sort -k 4,4 > ${SAMPLE}.tmp.outwardfacing.bed
+mv ${SAMPLE}.tmp.outwardfacing.bed ${SAMPLE}.tmp.outwardfacing.bed.old
+awk 'BEGIN {OFS="\t"}; {print $1,$2,$3,substr($4, 1, length($4)-2),$5,$6}' ${SAMPLE}.tmp.outwardfacing.bed.old > ${SAMPLE}.tmp.outwardfacing.bed.old.trimmed
+awk 'NR==FNR{a[$4]++; next} a[$4]==2' ${SAMPLE}.tmp.outwardfacing.bed.old.trimmed ${SAMPLE}.tmp.outwardfacing.bed.old.trimmed > ${SAMPLE}.outwardfacing.bed
 
 # change names of scaffolds using mapfiles for compatability with any genome
 chrom_count=$(wc -l ${MAPFILE} | awk '{print $1}')
 for (( i = 1 ; i < ${chrom_count}+1; i++)); do echo $i ; done > tmp.chrom_count
-paste tmp.chrom_count ${MAPFILE} > tmp.chrom_count_and_names
-awk -v OFS='\t' 'NR==FNR{a[$2]=$1;next}{$1=a[$1];}1' tmp.chrom_count_and_names outwardfacing.${SAMPLE}.bed > outwardfacing.${SAMPLE}.renamed.bed
-awk -v OFS='\t' 'NR==FNR{a[$2]=$1;next}{$1=a[$1];}1' tmp.chrom_count_and_names lengthfiltered.merged.splitreads.${SAMPLE}.bed > lengthfiltered.merged.splitreads.${SAMPLE}.renamed.bed
+paste ${SAMPLE}.tmp.chrom_count ${MAPFILE} > ${SAMPLE}.tmp.chrom_count_and_names
+awk -v OFS='\t' 'NR==FNR{a[$2]=$1;next}{$1=a[$1];}1' ${SAMPLE}.tmp.chrom_count_and_names ${SAMPLE}.outwardfacing.bed > ${SAMPLE}.outwardfacing.renamed.bed
+awk -v OFS='\t' 'NR==FNR{a[$2]=$1;next}{$1=a[$1];}1' ${SAMPLE}.tmp.chrom_count_and_names ${SAMPLE}.lengthfiltered.merged.splitreads.bed > ${SAMPLE}.lengthfiltered.merged.splitreads.renamed.bed
 
 # merge outward facing read pairs into single lines for confirming using python script
-sort -k4,4 -k2,2n outwardfacing.${SAMPLE}.renamed.bed > sorted.outwardfacing.${SAMPLE}.renamed.bed
+sort -k4,4 -k2,2n ${SAMPLE}.outwardfacing.renamed.bed > ${SAMPLE}.sorted.outwardfacing.renamed.bed
 awk -v OFS='\t' '{
     prev=$0; f2=$2; f3=$3; f4=$4
-    getline 
+    getline
     if ($4 == f4 && f2 < $2 && f3 <$3) {
         print $1, f2, $3, f3, $2
     }
-}' sorted.outwardfacing.${SAMPLE}.renamed.bed > sorted.grouped.outwardfacing.${SAMPLE}.renamed.bed
+}' ${SAMPLE}.sorted.outwardfacing.renamed.bed > ${SAMPLE}.sorted.grouped.outwardfacing.renamed.bed
 
 # use GNU parallel to speed things up
 # split into chunks first then each thread works on a chunk
 # parallel.confirmed are split reads confirmed by opposite facing read pairs
-split --number=l/${THREADS} --numeric-suffixes=1 --additional-suffix=.bed lengthfiltered.merged.splitreads.${SAMPLE}.renamed.bed lengthfiltered.merged.splitreads.${SAMPLE}.renamed.
-parallel -j ${THREADS} --link python ${ECC_CALLER_PYTHON_SCRIPTS}/ecc_caller_anygenome_confirmsrs_numpy_gnuparallel.py lengthfiltered.merged.splitreads.${SAMPLE}.renamed.{}.bed sorted.grouped.outwardfacing.${SAMPLE}.renamed.bed ${SAMPLE} ${chrom_count} {} ::: $(seq -w 1 ${THREADS})
-cat $(find . -maxdepth 1 -name "parallel.confirmed*" | xargs -r ls -1 | tr "\n" " ") > parallel.confirmed
+split --number=l/${THREADS} --numeric-suffixes=1 --additional-suffix=.bed ${SAMPLE}.lengthfiltered.merged.splitreads.renamed.bed ${SAMPLE}.lengthfiltered.merged.splitreads.renamed.
+parallel -j ${THREADS} --link python ${ECC_CALLER_PYTHON_SCRIPTS}/ecc_caller_anygenome_confirmsrs_numpy_gnuparallel.py ${SAMPLE}.lengthfiltered.merged.splitreads.renamed.{}.bed ${SAMPLE}.sorted.grouped.outwardfacing.renamed.bed ${SAMPLE} ${chrom_count} {} ::: $(seq -w 1 ${THREADS})
+cat $(find . -maxdepth 1 -name "${SAMPLE}.parallel.confirmed.*" | xargs -r ls -1 | tr "\n" " ") > ${SAMPLE}.parallel.confirmed
 
 # convert scaffolds to 1 index from 0 index
 # rename scaffolds in parallel.confirmed
-paste ${MAPFILE} tmp.chrom_count > tmp.chrom_names_and_count
-awk -v OFS='\t' '{print $1+1, $2, $3}' parallel.confirmed > parallel.plusone.confirmed
-awk -v OFS='\t' 'NR==FNR{a[$2]=$1;next}{$1=a[$1];}1' tmp.chrom_names_and_count parallel.plusone.confirmed > ${SAMPLE}.confirmedsplitreads.bed
-
+paste ${MAPFILE} ${SAMPLE}.tmp.chrom_count > ${SAMPLE}.tmp.chrom_names_and_count
+awk -v OFS='\t' '{print $1+1, $2, $3}' ${SAMPLE}.parallel.confirmed > ${SAMPLE}.parallel.plusone.confirmed
+awk -v OFS='\t' 'NR==FNR{a[$2]=$1;next}{$1=a[$1];}1' ${SAMPLE}.tmp.chrom_names_and_count ${SAMPLE}.parallel.plusone.confirmed > ${SAMPLE}.confirmedsplitreads.bed
 # clean up
 # parallel.confirmed MUST be removed here otherwise it causes major problems with the output
-rm parallel.confirmed*
+rm ${SAMPLE}.parallel.confirmed*
 
-rm tmp.*
+rm ${SAMPLE}.tmp
 
-rm lengthfiltered.merged.splitreads.${SAMPLE}.renamed.*.bed
+rm ${SAMPLE}.lengthfiltered.merged.splitreads.renamed.*.bed

@@ -57,7 +57,7 @@ for key in range(scaffold_number):
 
 def confirmeccs(ecc): # using numpy arrays and only looking at opposite facing read pairs within the same scaffold makes this very fast
     mask1 = numpy_dict[ecc[0]][:, 1] >= ecc[1]
-    mask2 = numpy_dict[ecc[0]][:, 2] <= ecc[2] 
+    mask2 = numpy_dict[ecc[0]][:, 2] <= ecc[2]
     mask_total = np.logical_and(mask1, mask2)
     masked = numpy_dict[ecc[0]][mask_total, :] # filter to opposite read pairs within the putative eccDNA forming region
     masked[:,3] -= ecc[1]
@@ -72,6 +72,6 @@ yesornoeccs = list(map(confirmeccs, eccloc_list))
 confirmedeccs = list(compress(eccloc_list, yesornoeccs))
 
 # write confirmed eccs to file, number is here to put parallelized chunks back together
-with open('parallel.confirmed'+output_number, 'w', newline = '') as confirmed:
+with open(output_name+'.parallel.confirmed.'+output_number, 'w', newline = '') as confirmed:
     w = csv.writer(confirmed, delimiter = '\t')
     w.writerows(confirmedeccs)

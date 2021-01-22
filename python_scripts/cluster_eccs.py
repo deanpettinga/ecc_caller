@@ -45,7 +45,7 @@ def get_distance_from_point(row):
     return start_distance + end_distance
 
 # read in input bed file (currently must be named "parallel.confirmed" with scaffold names as 0 indexed numbers)
-parallel_confirmed = pd.read_csv("parallel.confirmed", sep = '\t', names = ['chrom', 'start', 'end'])
+parallel_confirmed = pd.read_csv(outputname + ".parallel.confirmed", sep = '\t', names = ['chrom', 'start', 'end'])
 
 # merge all entries that are indentical and count their number, these are the starting number of split reads per eccDNA forming region
 parallel_confirmed = parallel_confirmed.groupby(parallel_confirmed.columns.tolist()).size().reset_index().\
@@ -92,12 +92,12 @@ for chrom in range(scaffold_number): # this is much faster than looking through 
             representative_variants[tuple(point_of_interest)] = cluster_subset_tupleoftuples # store all entries in the cluster under the name of the chosen representative entry for detailed look later
 
 # write output to "merged.confirmed", this is the name of the file that coverage_confirm_nodb.py uses
-with open('merged.confirmed', 'w', newline = '') as merged:
+with open(outputname + '.merged.confirmed', 'w', newline = '') as merged:
     w = csv.writer(merged, delimiter = '\t')
     w.writerows(representative_eccs)
 
 # write tsv where one column is the chosen variant for each cluster and the second column is all of the entries that were merged into that cluster
-with open('ecccaller_splitreads.' + outputname + '.tsv', 'w', newline="") as variants_dict:
+with open(outputname + '.ecccaller_splitreads.tsv', 'w', newline="") as variants_dict:
     w = csv.writer(variants_dict, delimiter = '\t')
     for key, value in representative_variants.items():
         w.writerow([key, value])

@@ -48,22 +48,22 @@ done
 
 # cutadapt uses specific adapters here, will be replaced with trimmomatic which predicts adapters automatically eventually
 # nextseq-trim option is necessary for nextseq data
-cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT --nextseq-trim=20 -o tmp.trimmed.seqprep.${SAMPLE}_R1.fastq -p tmp.trimmed.seqprep.${SAMPLE}_R2.fastq ${READONE} ${READTWO}
+cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT --nextseq-trim=20 -o ${SAMPLE}_R1.tmp.trimmed.seqprep.fastq -p ${SAMPLE}_R2.tmp.trimmed.seqprep.fastq ${READONE} ${READTWO}
 
 # map reads
-bwa mem -t ${THREADS} ${GENOME_DB} tmp.trimmed.seqprep.${SAMPLE}_R1.fastq tmp.trimmed.seqprep.${SAMPLE}_R2.fastq -o tmp.seqprep.trimmed.${SAMPLE}_bwamem.sam
+bwa mem -t ${THREADS} ${GENOME_DB} ${SAMPLE}_R1.tmp.trimmed.seqprep.fastq ${SAMPLE}_R2.tmp.trimmed.seqprep.fastq -o ${SAMPLE}.tmp.seqprep.trimmed.bwamem.sam
 
 # generate bam file from sam, this should probably just be passed as an option to bwa mem
-samtools view -S -b tmp.seqprep.trimmed.${SAMPLE}_bwamem.sam > ${SAMPLE}.mergedandpe.bwamem.bam
+samtools view -S -b ${SAMPLE}.tmp.seqprep.trimmed.bwamem.sam > ${SAMPLE}.mergedandpe.bwamem.bam
 
 # sort and index for filtering
 samtools sort ${SAMPLE}.mergedandpe.bwamem.bam > ${SAMPLE}.sorted.mergedandpe.bwamem.bam
 samtools index ${SAMPLE}.sorted.mergedandpe.bwamem.bam
 
 # filter using names of contigs in mapfile
-samtools view -b ${SAMPLE}.sorted.mergedandpe.bwamem.bam $(cat ${MAPFILE} | tr "\n" " ") > filtered.sorted.${SAMPLE}.bam
+samtools view -b ${SAMPLE}.sorted.mergedandpe.bwamem.bam $(cat ${MAPFILE} | tr "\n" " ") > ${SAMPLE}.filtered.sorted.bam
 
 # remove tmp files and unfiltered files
 # tmp command should probably be more specific, or use a tmp directory
-rm tmp*
+rm ${SAMPLE}*tmp*
 rm ${SAMPLE}.mergedandpe.bwamem.bam
