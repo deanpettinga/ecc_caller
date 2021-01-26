@@ -46,7 +46,7 @@ done
 # get chrom/scaffold count from mapfile
 # generate bam file with scaffolds renamed to chrom/scaffold number for compatability
 chrom_count=$(wc -l ${MAPFILE} | awk '{print $1}')
-for (( i = 1 ; i < ${chrom_count}+1; i++)); do echo $i ; done > tmp.chrom_count
+for (( i = 1 ; i < ${chrom_count}+1; i++)); do echo $i ; done > ${SAMPLE}.tmp.chrom_count
 paste ${SAMPLE}.tmp.chrom_count ${MAPFILE} > ${SAMPLE}.tmp.chrom_count_and_names
 samtools view -H ${FILTERED_BAMFILE} | awk -v OFS='\t' 'NR==FNR{a[$2]=$1;next}{ if ($2 ~ /^SN/ && substr($2, 4) in a) {print $1, "SN:"a[substr($2,4)], $3} else {print $0}}' ${SAMPLE}.tmp.chrom_count_and_names - |\
     samtools reheader - ${FILTERED_BAMFILE} > ${SAMPLE}.renamed.filtered.sorted.bam
