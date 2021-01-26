@@ -67,6 +67,7 @@ for chrom in range(scaffold_number): # this is much faster than looking through 
         linkage_for_scaffold = linkage(scaffold_subset_startend) # hierarchical clustering
     clusters = fcluster(linkage_for_scaffold, max_d, criterion='distance') # make clusters based off input distance cutoff
     for i in range(1, np.amax(clusters)+1): # loop through each cluster
+        print("working on subset containing chromosome", chrom, ", cluster", i)
         boolean_array = clusters==i
         cluster_subset = scaffold_subset[boolean_array]
         if len(cluster_subset) == 1: # many clusters will have just one entry
