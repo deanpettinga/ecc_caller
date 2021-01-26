@@ -79,12 +79,12 @@ awk -v OFS='\t' 'NR==FNR{a[$2]=$1;next}{$1=a[$1];}1' ${SAMPLE}.tmp.chrom_names_a
 awk -v OFS='\t' 'NR==FNR{a[$2]=$1;next}{$1=a[$1];}1' ${SAMPLE}.tmp.chrom_names_and_count ${SAMPLE}.ecccaller_output.bed > ${SAMPLE}.ecccaller_output.renamed.bed
 
 # clean up tmp files
-rm ${SAMPLE}.ecccaller_output.details.tsv*
-rm ${SAMPLE}.ecccaller_output.bed*
-rm ${SAMPLE}.parallel.confirmed
-rm ${SAMPLE}.parallel.plusone.confirmed
-rm ${SAMPLE}.renamed.filtered.sorted.bam
-rm ${SAMPLE}.renamed.filtered.sorted.bam.bai
-rm ${SAMPLE}.merged.confirmed*
+# rm ${SAMPLE}.ecccaller_output.details.tsv*
+# rm ${SAMPLE}.ecccaller_output.bed*
+# rm ${SAMPLE}.parallel.confirmed
+# rm ${SAMPLE}.parallel.plusone.confirmed
+# rm ${SAMPLE}.renamed.filtered.sorted.bam
+# rm ${SAMPLE}.renamed.filtered.sorted.bam.bai
+# rm ${SAMPLE}.merged.confirmed*
 
 ## should probably sort outputs at the end
