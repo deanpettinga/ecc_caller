@@ -131,14 +131,14 @@ def confidence_check(ecc):
 confidence_flat_merged_list = list(map(confidence_check, flat_merged_list))
 
 # write tsv which includes each eccDNA location as well as their confidence and supporting number of split reads
-with open(output_name + '.ecccaller_output.' + '.details.tsv' + output_number, 'w', newline = '') as bed:
+with open(output_name + '.ecccaller_output.details.tsv' + output_number, 'w', newline = '') as bed:
     w = csv.writer(bed, delimiter = '\t')
     for i in range(len(confidence_flat_merged_list)):
         row = [confidence_flat_merged_list[i][0]+1, confidence_flat_merged_list[i][1], confidence_flat_merged_list[i][2], confidence_flat_merged_list[i][3], confidence_flat_merged_list[i][4],confidence_flat_merged_list[i][5], confidence_flat_merged_list[i][6], confidence_flat_merged_list[i][7]]
         w.writerow(row)
 
 # write bed version of tsv with details missing and color coded by confidence level
-with open(output_name + '.ecccaller_output.' + '.bed' + output_number, 'w', newline = '') as bed:
+with open(output_name + '.ecccaller_output.bed' + output_number, 'w', newline = '') as bed:
     w = csv.writer(bed, delimiter = '\t')
     for i in range(len(confidence_flat_merged_list)):
         if confidence_flat_merged_list[i][5] == 'lowq':
