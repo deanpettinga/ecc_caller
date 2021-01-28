@@ -70,8 +70,8 @@ split --number=l/${THREADS} --numeric-suffixes=1 ${SAMPLE}.shuf.merged.confirmed
 parallel -j ${THREADS} --link python ${ECC_CALLER_PYTHON_SCRIPTS}/coverage_confirm_nodb.py ${SAMPLE} {} ${SAMPLE}.renamed.filtered.sorted.bam ::: $(seq -w 1 ${THREADS})
 
 # put parallel chunks back together
-cat $(find . -maxdepth 1 -name "${SAMPLE}.ecccaller_output.details.tsv*" | xargs -r ls -1 | tr "\n" " ") > ${SAMPLE}.ecccaller_output.details.tsv
-cat $(find . -maxdepth 1 -name "${SAMPLE}.ecccaller_output.bed*" | xargs -r ls -1 | tr "\n" " ") > ${SAMPLE}.ecccaller_output.bed
+cat $(find ./ -regex ".*${SAMPLE}.ecccaller_output.details.tsv[0-9]+" | xargs -r ls -1 | tr "\n" " ") > ${SAMPLE}.ecccaller_output.details.tsv
+cat $(find ./ -regex ".*${SAMPLE}.ecccaller_output.bed[0-9]+" | xargs -r ls -1 | tr "\n" " ") > ${SAMPLE}.ecccaller_output.bed
 
 # rename output files to original chrom/scaffold names
 paste ${MAPFILE} ${SAMPLE}.tmp.chrom_count > ${SAMPLE}.tmp.chrom_names_and_count
