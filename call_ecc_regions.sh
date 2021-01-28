@@ -184,7 +184,9 @@ awk -v OFS='\t' '{
 # parallel.confirmed are split reads confirmed by opposite facing read pairs
 split --number=l/${THREADS} --numeric-suffixes=1 --additional-suffix=.bed ${SAMPLE}.lengthfiltered.merged.splitreads.renamed.bed ${SAMPLE}.lengthfiltered.merged.splitreads.renamed.
 parallel -j ${THREADS} --link python ${ECC_CALLER_PYTHON_SCRIPTS}/ecc_caller_anygenome_confirmsrs_numpy_gnuparallel.py ${SAMPLE}.lengthfiltered.merged.splitreads.renamed.{}.bed ${SAMPLE}.sorted.grouped.outwardfacing.renamed.bed ${SAMPLE} ${chrom_count} {} ::: $(seq -w 1 ${THREADS})
-cat $(find . -maxdepth 1 -name "${SAMPLE}.parallel.confirmed.*" | xargs -r ls -1 | tr "\n" " ") > ${SAMPLE}.parallel.confirmed
+# gather the results from ecc_caller_anygenome_confirmsrs_numpy_gnuparallel.py [${SAMPLE}.parallel.confirmed.*] and merge.
+# the regex searches the project directory for parallel.confirmed files that must end in a number (parallel pieces).
+cat $(find ./ -regex ".*${SAMPLE}.parallel.confirmed.[0-9]+" | xargs -r ls -1 | tr "\n" " ") > ${SAMPLE}.parallel.confirmed
 
 # convert scaffolds to 1 index from 0 index
 # rename scaffolds in parallel.confirmed
